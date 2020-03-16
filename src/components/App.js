@@ -1,21 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { Route, Switch, Redirect, useHistory } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { Route, Switch, Redirect, useHistory } from 'react-router-dom';
 
-import "./App.css";
-import Reservation from "./Reservation";
-import ConfirmationPage from "./ConfirmationPage";
-import Confirmed from "./Confirmed";
-import Cancelled from "./Cancelled";
+import './App.css';
+import Reservation from './Reservation';
+import ConfirmationPage from './ConfirmationPage';
+import Confirmed from './Confirmed';
+import Cancelled from './Cancelled';
+import Login from './Login';
+import Rooms from './rooms/Rooms';
 
-import { getReservations, getRooms, getUsers } from "../api/fetchData";
+import { getReservations, getRooms, getUsers } from '../api/fetchData';
 
 function App(props) {
-  const [data, setData] = useState("");
+  const [data, setData] = useState('');
   let history = useHistory();
 
   const onReserve = data => {
     setData(data);
-    history.push("/confirm");
+    history.push('/reservation-confirm');
   };
 
   const [reservations, setReservations] = useState([]);
@@ -26,14 +28,18 @@ function App(props) {
     getReservations().then(setReservations);
     getRooms().then(setRooms);
     getUsers().then(setUsers);
-    // setInterval(() => getReservations().then(setReservations), 30000);
   }, []);
 
   return (
-    <div className="container-fluid">
+    <div className='container-fluid'>
       <Switch>
         <Route
-          path="/"
+          path='/'
+          exact
+          render={props => <Login {...props} rooms={rooms} />}
+        />
+        <Route
+          path='/reservation'
           exact
           render={props => (
             <Reservation
@@ -46,7 +52,7 @@ function App(props) {
           )}
         />
         <Route
-          path="/confirm"
+          path='/reservation-confirm'
           render={props => (
             <ConfirmationPage
               {...props}
@@ -57,13 +63,17 @@ function App(props) {
           )}
         />
         <Route
-          path="/confirmed"
+          path='/reservation-confirmed'
           render={props => (
             <Confirmed {...props} data={data} rooms={rooms} users={users} />
           )}
         />
-        <Route path="/cancelled" component={Cancelled} />
-        <Redirect to="/" />
+        <Route path='/reservation-cancelled' component={Cancelled} />
+        <Route
+          path='/rooms'
+          render={props => <Rooms {...props} rooms={rooms} />}
+        />
+        {/* <Redirect to='/' /> */}
       </Switch>
     </div>
   );

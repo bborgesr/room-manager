@@ -20,12 +20,12 @@ function ConfirmationPage(props) {
           rooms={props.rooms}
           users={props.users}
         />
-        <Link to="/confirmed">
+        <Link to="/reservation-confirmed">
           <Button className="user-results__confirmed" variant="primary">
             Reserve room
           </Button>
         </Link>
-        <Link to="/cancelled">
+        <Link to="/reservation-cancelled">
           <Button className="user-results__cancelled" variant="danger">
             Cancel
           </Button>
