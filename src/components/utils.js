@@ -20,7 +20,7 @@ import dayjs from 'dayjs';
 const getName = (names, id) => {
   const selected = names.filter(el => el.id.toString() === id.toString());
   const first = selected[0];
-  if (first) return `${first.primeironome} ${first.sobrenome}`;
+  if (first) return `${first.primeironome} ${first.sobrenome}` || first.label;
 };
 
 const getNames = users =>
@@ -32,7 +32,7 @@ const getNames = users =>
 const getRoom = (rooms, id) => {
   const selected = rooms.filter(el => el.id.toString() === id.toString());
   const first = selected[0];
-  if (first) return first.nome;
+  if (first) return first.nome || first.label;
 };
 
 const getRooms = rooms =>
