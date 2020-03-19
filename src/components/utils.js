@@ -45,6 +45,7 @@ const getLogin = (names, id) => {
 const getNames = users =>
   users.map(el => ({
     id: el.id,
+    value: el.id,
     label: `${el.primeironome} ${el.sobrenome}`,
     firstName: el.primeironome,
     lastName: el.sobrenome,
