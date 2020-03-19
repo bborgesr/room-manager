@@ -17,16 +17,38 @@ import dayjs from 'dayjs';
 //   { id: "4", label: "Bream" }
 // ];
 
-const getName = (names, id) => {
+const findName = (names, id) => {
   const selected = names.filter(el => el.id.toString() === id.toString());
-  const first = selected[0];
+  return selected[0];
+};
+
+const getName = (names, id) => {
+  const first = findName(names, id);
   if (first) return `${first.primeironome} ${first.sobrenome}` || first.label;
+};
+
+const getFirstName = (names, id) => {
+  const first = findName(names, id);
+  if (first) return first.primeironome || first.firstName;
+};
+
+const getLastName = (names, id) => {
+  const first = findName(names, id);
+  if (first) return first.sobrenome || first.lastName;
+};
+
+const getLogin = (names, id) => {
+  const first = findName(names, id);
+  if (first) return first.login;
 };
 
 const getNames = users =>
   users.map(el => ({
-    value: el.id,
-    label: `${el.primeironome} ${el.sobrenome}`
+    id: el.id,
+    label: `${el.primeironome} ${el.sobrenome}`,
+    firstName: el.primeironome,
+    lastName: el.sobrenome,
+    login: el.login
   }));
 
 const getRoom = (rooms, id) => {
@@ -165,6 +187,9 @@ const getAlerts = errors => {
 export {
   getName,
   getNames,
+  getFirstName,
+  getLastName,
+  getLogin,
   getRoom,
   getRooms,
   databaseTimeToUserTime,

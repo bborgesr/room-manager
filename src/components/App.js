@@ -8,6 +8,7 @@ import Confirmed from './Confirmed';
 import Cancelled from './Cancelled';
 import Login from './Login';
 import Rooms from './rooms/Rooms';
+import Users from './users/Users';
 
 import { getReservations, getRooms, getUsers } from '../api/fetchData';
 
@@ -72,6 +73,10 @@ function App(props) {
         <Route
           path='/rooms'
           render={props => <Rooms {...props} rooms={rooms} />}
+        />
+        <Route
+          path='/users'
+          render={props => <Users {...props} users={users} />}
         />
         {/* <Redirect to='/' /> */}
       </Switch>

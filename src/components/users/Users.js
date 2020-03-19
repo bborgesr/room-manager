@@ -2,71 +2,91 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Button, Modal, Form } from 'react-bootstrap';
-import Select from 'react-select';
 
-import { getRooms, getRoom } from '../utils';
+import { getNames, getFirstName, getLastName, getLogin } from '../utils';
 
-function Rooms(props) {
-  const [rooms, setRooms] = useState([]);
-  const [roomName, setRoomName] = useState('');
-  const [roomId, setRoomId] = useState();
-  const [roomTypology, setRoomTypology] = useState('');
+function Users(props) {
+  const [names, setNames] = useState([]);
+  const [nameId, setNameId] = useState();
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [login, setLogin] = useState('');
   const [modalShow, setModalShow] = useState(false);
   const [creating, setCreating] = useState(false);
 
   useEffect(() => {
-    setRooms(getRooms(props.rooms));
-  }, [props.rooms]);
+    setNames(getNames(props.users));
+  }, [props.users]);
 
   const onAddButtonClick = () => {
-    setRoomName('');
+    setFirstName('');
+    setLastName('');
+    setLogin('');
     setCreating(true);
     setModalShow(true);
   };
 
   const onEditButtonClick = event => {
-    setRoomName(getRoom(rooms, event));
-    setRoomId(event);
+    setFirstName(getFirstName(names, event));
+    setLastName(getLastName(names, event));
+    setLogin(getLogin(names, event));
+    setNameId(event);
     setModalShow(true);
   };
 
-  const handleRoomNameChange = event => {
-    setRoomName(event.target.value);
+  const handleFirstNameChange = event => {
+    setFirstName(event.target.value);
   };
 
-  const handleRoomTypologyChange = event => {
-    setRoomTypology(event.value.charAt(0).toUpperCase() + event.value.slice(1));
+  const handleLastNameChange = event => {
+    setLastName(event.target.value);
+  };
+
+  const handleLoginChange = event => {
+    setLogin(event.target.value);
   };
 
   const onSaveChanges = () => {
     if (creating) {
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', 'http://localhost:5000/api/salas/', true);
+      xhr.open('POST', 'http://localhost:5000/api/usuarios/', true);
       xhr.setRequestHeader('Content-Type', 'application/json');
       xhr.onload = function() {
-        const jsonRooms = () =>
-          fetch('http://localhost:5000/api/salas/').then(response =>
+        const jsonUsers = () =>
+          fetch('http://localhost:5000/api/usuarios/').then(response =>
             response.json()
           );
-        jsonRooms()
-          .then(getRooms)
-          .then(setRooms);
+        jsonUsers()
+          .then(getNames)
+          .then(setNames);
       };
-      xhr.send(JSON.stringify({ nome: roomName }));
+      xhr.send(
+        JSON.stringify({
+          primeironome: firstName,
+          sobrenome: lastName,
+          login: login
+        })
+      );
     } else {
       const xhr = new XMLHttpRequest();
-      xhr.open('PUT', `http://localhost:5000/api/salas/${roomId}`, true);
+      xhr.open('PUT', `http://localhost:5000/api/usuarios/${nameId}`, true);
       xhr.onload = function() {
-        const jsonRooms = () =>
-          fetch('http://localhost:5000/api/salas/').then(response =>
+        const jsonUsers = () =>
+          fetch('http://localhost:5000/api/usuarios/').then(response =>
             response.json()
           );
-        jsonRooms()
-          .then(getRooms)
-          .then(setRooms);
+        jsonUsers()
+          .then(getNames)
+          .then(setNames);
       };
       xhr.setRequestHeader('Content-type', 'application/json');
-      xhr.send(JSON.stringify({ nome: roomName }));
+      xhr.send(
+        JSON.stringify({
+          primeironome: firstName,
+          sobrenome: lastName,
+          login: login
+        })
+      );
     }
 
     setCreating(false);
@@ -80,15 +100,15 @@ function Rooms(props) {
 
   const onDeleteButtonClick = id => {
     const xhr = new XMLHttpRequest();
-    xhr.open('DELETE', `http://localhost:5000/api/salas/${id}`, true);
+    xhr.open('DELETE', `http://localhost:5000/api/usuarios/${id}`, true);
     xhr.onload = function() {
-      const jsonRooms = () =>
-        fetch('http://localhost:5000/api/salas/').then(response =>
+      const jsonUsers = () =>
+        fetch('http://localhost:5000/api/usuarios/').then(response =>
           response.json()
         );
-      jsonRooms()
-        .then(getRooms)
-        .then(setRooms);
+      jsonUsers()
+        .then(getNames)
+        .then(setNames);
     };
     xhr.send(null);
   };
@@ -101,28 +121,32 @@ function Rooms(props) {
         </div>
         <Modal.Dialog>
           <Modal.Header>
-            <Modal.Title>{creating ? 'Create' : 'Edit'} Room</Modal.Title>
+            <Modal.Title>{creating ? 'Create' : 'Edit'} User</Modal.Title>
           </Modal.Header>
 
           <Modal.Body>
-            <label htmlFor='roomName'>Room name</label>
+            <label htmlFor='firstName'>User first name</label>
             <Form.Control
               type='text'
-              id='roomName'
-              value={roomName}
-              onChange={handleRoomNameChange}
+              id='firstName'
+              value={firstName}
+              onChange={handleFirstNameChange}
             />
             <br />
-            <label htmlFor='roomTypology'>Room typology</label>
-            <Select
-              options={[
-                { value: 'small', label: 'Small' },
-                { value: 'medium', label: 'Medium' },
-                { value: 'large', label: 'Large' }
-              ]}
-              id='roomTypology'
-              // value={roomTypology}
-              onChange={handleRoomTypologyChange}
+            <label htmlFor='lastName'>User last name</label>
+            <Form.Control
+              type='text'
+              id='lastName'
+              value={lastName}
+              onChange={handleLastNameChange}
+            />
+            <br />
+            <label htmlFor='login'>User login</label>
+            <Form.Control
+              type='text'
+              id='login'
+              value={login}
+              onChange={handleLoginChange}
             />
           </Modal.Body>
 
@@ -151,18 +175,18 @@ function Rooms(props) {
           onClick={onAddButtonClick}
           style={{ float: 'right', marginBottom: '20px' }}
         >
-          Add new room
+          Add new user
         </Button>
         <table className='table'>
           <thead>
             <tr>
-              <th>Room</th>
+              <th>User</th>
               <th>Edit</th>
               <th>Remove</th>
             </tr>
           </thead>
           <tbody>
-            {rooms.map((val, index) => (
+            {names.map((val, index) => (
               <tr key={index}>
                 <td>{val.label}</td>
                 <td>
@@ -194,4 +218,4 @@ function Rooms(props) {
   }
 }
 
-export default Rooms;
+export default Users;
