@@ -27,8 +27,11 @@ function App(props) {
 
   useEffect(() => {
     getReservations().then(setReservations);
+    setInterval(() => getReservations().then(setReservations), 1000);
     getRooms().then(setRooms);
+    setInterval(() => getRooms().then(setRooms), 1000);
     getUsers().then(setUsers);
+    setInterval(() => getUsers().then(setUsers), 1000);
   }, []);
 
   return (
@@ -78,7 +81,7 @@ function App(props) {
           path='/users'
           render={props => <Users {...props} users={users} />}
         />
-        {/* <Redirect to='/' /> */}
+        <Redirect to='/' />
       </Switch>
     </div>
   );
